@@ -43,9 +43,3 @@
 .sort-items.finished .line {
     display: none;
 }
-.sort-item.left {
-  transform: translateX(-40px);
-}
-.sort-item.right {
-    transform: translateX(40px);
-}

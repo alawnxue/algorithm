@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bubble Sort</title>
+    <title>Selection Sort</title>
     <link type="text/css" rel="stylesheet" href="../../css/reset.css" />
     <link type="text/css" rel="stylesheet" href="./animation.css" />
 </head>
@@ -41,7 +41,7 @@ class Animation {
     }
     initAnimationQueue() {
         this.animationQueue = [];
-        this.bubbleSort(this.array, (i, j, swap)=> {
+        this.sort(this.array, (i, j, swap)=> {
             this.animationQueue.push({
                 prev: i,
                 next: j,
@@ -49,11 +49,11 @@ class Animation {
             });
         })
     }
-    bubbleSort(array, compare) {
+    sort(array, compare) {
         let temp;
         let length = array.length;
 
-        for (let i = 0; i < length; i++) {
+        for (let i = 0; i < length - 1; i++) {
             for (let j = i+1; j < length; j++) {
                 let swap = false;
                 if (array[i] > array[j]) {
