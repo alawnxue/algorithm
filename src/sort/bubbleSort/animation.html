@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bubble Sort</title>
+    <link type="text/css" rel="stylesheet" href="../../css/reset.css" />
+    <link type="text/css" rel="stylesheet" href="./animation.css" />
+</head>
+
+<body>
+    <div class="input">
+        <label>请输入需要排序的数组：</label> <input type="text" />
+    </div>
+    <div class="sort-items">
+        <div class="line"></div>
+    </div>
+</body>
+
+<script type="text/javascript">
+class Animation {
+    constructor(array) {
+        this.container = document.querySelector('.sort-items');
+        this.array = array;
+        this.initScene();
+        this.animationDuration = 1000;
+        this.animationInterval = 400;
+        this.initAnimationQueue();
+    }
+    initScene() {
+        const { array, container } = this;
+        for(let i=0;i<array.length;i++) {
+            const item = document.createElement('div');
+            item.classList = 'sort-item';
+            item.style.height = `${array[i] * 5}px`;
+            item.textContent = array[i];
+            container.appendChild(item);
+        }
+    }
+    initAnimationQueue() {
+        this.animationQueue = [];
+        this.bubbleSort(this.array, (i, j, swap)=> {
+            this.animationQueue.push({
+                prev: i,
+                next: j,
+                swap
+            });
+        })
+    }
+    bubbleSort(array, compare) {
+        let temp;
+        let length = array.length;
+
+        for (let i = 0; i < length; i++) {
+            for (let j = i+1; j < length; j++) {
+                let swap = false;
+                if (array[i] > array[j]) {
+                    temp = array[i];
+                    array[i] = array[j];
+                    array[j] = temp;
+                    swap = true;
+                }
+                compare(i, j, swap);
+            }
+        }
+    }
+    start(finished) {
+        const { animationQueue, container } = this;
+
+        let currentRound = 0;
+        const runAnimation = () => {
+            const items = document.querySelectorAll('.sort-item');
+            if (!animationQueue.length) {
+                Array.from(items).forEach(item => item.classList.add('finished'));
+                container.classList.add('finished');
+                if (typeof finished === 'function') {
+                    finished(); 
+                    return;
+                }
+            }
+
+            const animationNode = animationQueue.shift();
+            const node = items[currentRound];
+            if (currentRound !== animationNode.prev) {
+                node.classList.add('finished');
+                currentRound = animationNode.prev;
+            }
+
+            this.runNodeAnimation(animationNode, () => {
+                runAnimation();
+            });
+        }
+
+        runAnimation();
+    }
+    runNodeAnimation({prev, next, swap}, callback) {
+        const { container,  animationDuration, animationInterval } = this;
+        const items = document.querySelectorAll('.sort-item');
+
+        const prevNode = items[prev];
+        const nextNode = items[next];
+
+        // 先clone两个出来
+        const prevCloneNode = prevNode.cloneNode(true);
+        const nextCloneNode = nextNode.cloneNode(true);
+
+        prevNode.classList.add('animation');
+        nextNode.classList.add('animation');
+
+        const instance = (next - prev ) * 40;
+        const line = container.querySelector('.line');
+
+        line.style.width = `${instance}px`;
+        line.style.height = `${instance}px`;
+        line.style.left = `${prev * 40 + 10}px`;
+        
+        if (swap) {         
+            prevNode.style.transform = `translateX(${instance}px)`;
+            nextNode.style.transform = `translateX(-${instance}px)`;
+        }
+
+        setTimeout(() => {
+            prevNode.classList.remove('animation');
+            nextNode.classList.remove('animation');
+
+            // 交换两个节点
+            if(swap) {
+                nextNode.parentNode.replaceChild(prevCloneNode, nextNode);
+                prevNode.parentNode.replaceChild(nextCloneNode, prevNode);
+            }
+
+            setTimeout(() => {
+                if (typeof callback === 'function') {
+                    callback();
+                }
+            });
+        }, swap ? animationDuration : animationInterval);
+    }
+}
+
+
+const animation = new Animation([10, 32, 21, 56, 44, 25, 18, 28, 42, 79, 63]);
+animation.start(() => {
+    console.log('动画结束');  
+});
+</script>
+
+</html>

@@ -1,0 +1,51 @@
+.sort-items {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: center;
+  margin-top: 20px;
+  margin-left: 20px;
+  position: relative;
+}
+.sort-item {
+  display: flex;
+  width: 30px;
+  background: #e0e0e0;
+  margin-right: 10px;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.sort-item:last-child {
+  margin-right: 0px;
+}
+.sort-item.finished {
+  background: rgb(29, 165, 131);
+  color: #fff;
+}
+.sort-item.animation {
+    background: rgb(236, 182, 4);
+    color: #fff;
+    transition: transform 0.4s ease-in;
+    transition-delay: 0.3s;
+}
+.line {
+    border-radius: 100%;
+    border: 3px dotted rgb(236, 182, 4); 
+    position: absolute;
+    left: 0%;
+    bottom: 0%;
+    transform: translateY(50%) rotate(-45deg);
+    border-top-color: transparent;
+    border-right-color: transparent;
+    z-index: 20px;
+}
+.sort-items.finished .line {
+    display: none;
+}
+.sort-item.left {
+  transform: translateX(-40px);
+}
+.sort-item.right {
+    transform: translateX(40px);
+}
